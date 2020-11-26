@@ -195,7 +195,7 @@ int main(){
     
     struct pollfd client[4096]; //open num is 4096
     client[0].fd = listenfd;
-    client[0].events = POLLIN; //POLLIN表示 普通或优先数据可读
+    client[0].events = EPOLLIN; //POLLIN表示 普通或优先数据可读
     //其他设为-1 表示还没用到
     for(int i = 1; i < 4096; i++){
         client[i].fd = -1;
