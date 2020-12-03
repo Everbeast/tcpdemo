@@ -43,7 +43,7 @@ public:
                         break;
                     }
                 }
-                if(idx == m_read_idx){
+                if(idx == m_read_idx){//读完了这次接受的数据 则继循环
                     continue;
                 }
                 m_buf[idx - 1] = '\0';

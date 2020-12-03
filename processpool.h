@@ -74,7 +74,7 @@ private:
     int m_process_number;
     //进程在池中的序号 0开始
     int m_idx;
-    //每个进程对应一个epoll内核时间表，用m_epollfd标识
+    //每个进程对应一个epoll内核事件表，用m_epollfd标识
     int m_epollfd;
     //监听socket
     int m_listenfd;
@@ -148,11 +148,11 @@ processpool<T>::processpool(int listenfd, int process_number)
 
             m_sub_process[i].m_pid = fork();
             assert(m_sub_process[i].m_pid >= 0);
-            if(m_sub_process[i].m_pid > 0){//parent 关闭写端
+            if(m_sub_process[i].m_pid > 0){//parent 关闭1端
                 close(m_sub_process[i].m_pipefd[1]);
                 continue;
             }
-            else{ //child  关闭读端
+            else{ //child  关闭2端
                 close(m_sub_process[i].m_pipefd[0]);
                 m_idx = i;
                 break;
@@ -244,12 +244,12 @@ void processpool<T>::run_child(){
                     continue;
                 }else{
                     for(int i = 0; i < ret; ++i){
-                        switch ((signals[i]))
+                        switch (signals[i])
                         {
                             case SIGCHLD:{
                                 pid_t pid;
                                 int stat;
-                                while((pid == waitpid(-1, &stat, WNOHANG)) > 0){
+                                while((pid == waitpid(-1, &stat, WNOHANG)) > 0){//回收所有僵尸进城
                                     continue
                                 }
                                 break;
